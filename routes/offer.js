@@ -82,31 +82,35 @@ router.put("/offer/update", isAuthenticated, async (req, res) => {
 
 router.get("/offers", async (req, res) => {
     try {
-        const { title, priceMin, priceMax, sort, page } = req.query;
+        const { title, priceMin, priceMax, sort, page, limit } = req.query;
         const filterObj = {};
-
+        console.log(req.query);
         if (title) {
             filterObj.product_name = new RegExp(title, "i");
         }
 
         if (priceMin) {
-            filterObj.product_price = {};
-            filterObj.product_price.$gte = Number(priceMin);
+            filterObj.product_price = {
+                $gte: Number(priceMin)
+            }
         }
 
         if (priceMax) {
-            if (filterObj.product_price === "undefined") {
-                filterObj.product_price = {};
+            if (filterObj.product_price) {
+                filterObj.product_price.$lte = Number(priceMax);
             }
-
-            filterObj.product_price.$lte = Number(priceMax);
+            else {
+                filterObj.product_price = {
+                    $lte: Number(priceMax)
+                }
+            }
         }
 
         const sortObject = {};
         if (sort) {
             let sortParamStr = req.query.sort;
             sortParamStr = sortParamStr.replace(new RegExp("price-", "i"), "");
-            console.log("str: " + sortParamStr);
+            //console.log("str: " + sortParamStr);
             let sortParamValue = 1;
             const regex = new RegExp("desc", "i")
             if (regex.test(sortParamStr)) {
@@ -116,24 +120,28 @@ router.get("/offers", async (req, res) => {
             sortObject.product_price = sortParamValue
         }
 
-        const pageLimit = 3;
-        let pageNum;
-        let offers;
+        const count = await Offer.countDocuments(filterObj);
 
-        if (!page || (page < Number(page))) {
-            pageNum = 0;
-        } else {
-            pageNum = Number(page) - 1;
+        let pageLimit = Number(limit);
+        if (!pageLimit || pageLimit <= 0) {
+            pageLimit = count;
         }
 
-        offers = await Offer.find(filterObj).sort(sortObject).limit(pageLimit).skip(pageNum * pageLimit).populate({
+        let pageNum = Number(page);
+        if (!pageNum || (pageNum < 1)) {
+            pageNum = 0;
+        } else {
+            pageNum = pageNum - 1;
+        }
+
+        const offers = await Offer.find(filterObj).sort(sortObject).limit(pageLimit).skip(pageNum * pageLimit).populate({
             path: "owner",
             select: "account"
         });
 
         if (offers.length > 0) {
 
-            res.json(offers);
+            res.json({ "count": count, "offers": offers });
         }
         else {
             res.status(409).json({ message: "No offer found" });
