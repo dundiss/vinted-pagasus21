@@ -8,7 +8,6 @@ const app = express();
 app.use(formidable());
 
 //connexion à la BDD
-mongoose.connect("mongodb://localhost/vintedDB");
 mongoose.connect(process.env.MONGODB_URI);
 
 //Config de Cloudinary
