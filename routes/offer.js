@@ -89,39 +89,43 @@ router.put("/offer/update", isAuthenticated, async (req, res) => {
     try {
         //Destructuring users parameters to be updated
         const { id, title, description, price } = req.fields;
+        if (id) {
+            //update parameters
+            const paramsToBeUpdated = {};
 
-        //update parameters
-        const paramsToBeUpdated = {};
+            if (title) {
+                paramsToBeUpdated.product_name = title;
+            }
 
-        if (title) {
-            paramsToBeUpdated.product_name = title;
+            if (description) {
+                paramsToBeUpdated.product_description = description;
+            }
+
+            if (price) {
+                paramsToBeUpdated.product_price = price;
+            }
+
+            // Mettre à jour l'offre
+            const offerToUpdate = await Offer.findByIdAndUpdate(
+                id,
+                paramsToBeUpdated,
+                // pour renvoyer le document au client après l'avoir modifié, il est nécessaire de passer cette option
+                { new: true }
+            );
+
+            // si l'offre a été trouvée
+            if (offerToUpdate) {
+                res.status(200).json({
+                    message: "offer successfully updated",
+                    offer: offerToUpdate,
+                });
+                // si l'offre n'existe pas
+            } else {
+                res.status(404).json({ message: "offer not found" });
+            }
         }
-
-        if (description) {
-            paramsToBeUpdated.product_description = description;
-        }
-
-        if (price) {
-            paramsToBeUpdated.product_price = price;
-        }
-
-        // Mettre à jour l'offre
-        const offerToUpdate = await Offer.findByIdAndUpdate(
-            id,
-            paramsToBeUpdated,
-            // pour renvoyer le document au client après l'avoir modifié, il est nécessaire de passer cette option
-            { new: true }
-        );
-
-        // si l'offre a été trouvée
-        if (offerToUpdate) {
-            res.status(200).json({
-                message: "offer successfully updated",
-                offer: offerToUpdate,
-            });
-            // si l'offre n'existe pas
-        } else {
-            res.status(404).json({ message: "offer not found" });
+        else {
+            res.status(400).json({ message: "bad request" });
         }
     } catch (error) {
         res.status(400).json(error.message);
