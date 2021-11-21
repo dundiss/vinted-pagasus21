@@ -132,6 +132,26 @@ router.put("/offer/update", isAuthenticated, async (req, res) => {
     }
 });
 
+router.delete("/offer/delete/:id", isAuthenticated, async (req, res) => {
+    try {
+        if (req.params.id) {
+            const deletedOffer = await Offer.findByIdAndDelete({ _id: req.params.id });
+            if (deletedOffer) {
+                res.json({ message: "offer succesfully deleted" });
+            } else {
+                res.status(404).json({ message: "offer to be deleted not found" });
+            }
+
+        }
+        else {
+            res.status(400).json({ message: "Bad request!" });
+        }
+
+    } catch (error) {
+        res.status(400).json(error.message);
+    }
+});
+
 router.get("/offers", async (req, res) => {
     try {
         const { title, priceMin, priceMax, sort, page, limit } = req.query;
