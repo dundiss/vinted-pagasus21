@@ -10,6 +10,31 @@ const User = require("../models/User");
 // Import du middleware
 const isAuthenticated = require("../middleware/isAuthenticated");
 
+const toClientDetails = (productDetails) => {
+    if (productDetails.length > 0) {
+        const details = [{
+            "MARQUE": productDetails[0].brand
+        },
+        {
+            "TAILLE": productDetails[1].size
+        },
+        {
+            "ÉTAT": productDetails[2].condition
+        },
+        {
+            "COULEUR": productDetails[3].color
+        },
+        {
+            "EMPLACEMENT": productDetails[4].city
+        }];
+
+        return details;
+    }
+    else {
+        return [];
+    }
+}
+
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
     try {
         //console.log(req.fields);
@@ -43,23 +68,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                 "product_name": newOffer.product_name,
                 "product_description": newOffer.product_description,
                 "product_price": newOffer.product_price,
-                "product_details": [
-                    {
-                        "MARQUE": newOffer.product_details[0].brand
-                    },
-                    {
-                        "TAILLE": newOffer.product_details[1].size
-                    },
-                    {
-                        "ÉTAT": newOffer.product_details[2].condition
-                    },
-                    {
-                        "COULEUR": newOffer.product_details[3].color
-                    },
-                    {
-                        "EMPLACEMENT": newOffer.product_details[4].city
-                    }
-                ],
+                "product_details": toClientDetails(newOffer.product_details),
                 "owner": {
                     "account": {
                         "username": newOffer.owner.account.username,
@@ -141,6 +150,10 @@ router.get("/offers", async (req, res) => {
         });
 
         if (offers.length > 0) {
+            //Formating product details to client expected format
+            for (let i = 0; i < offers.length; i++) {
+                offers[i].product_details = toClientDetails(offers[i].product_details);
+            }
 
             res.json({ "count": count, "offers": offers });
         }
