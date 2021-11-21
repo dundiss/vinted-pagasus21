@@ -29,7 +29,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             folder: `/vinted/offers/${newOffer._id}`
         }));
 
-        console.log(result);
+        //console.log(result);
 
         newOffer.product_image = result.secure_url;
 
@@ -84,7 +84,8 @@ router.get("/offers", async (req, res) => {
     try {
         const { title, priceMin, priceMax, sort, page, limit } = req.query;
         const filterObj = {};
-        console.log(req.query);
+        //console.log(req.query);
+
         if (title) {
             filterObj.product_name = new RegExp(title, "i");
         }
