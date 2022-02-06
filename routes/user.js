@@ -80,7 +80,7 @@ router.post("/user/signup", async (req, res) => {
 
                 const newUser = await saveUser(username, email, phone, salt, hash, token);
 
-                res.json({ message: newUser });
+                res.json({ data: newUser });
             }
             else {
                 res.status(409).json({ error: { message: "Bad request" } });
@@ -104,7 +104,7 @@ router.post("/user/login", async (req, res) => {
             hash = generateHash(req.fields.password + user.salt);
             if (user.hash === hash) {
                 res.json({
-                    message: {
+                    data: {
                         "_id": user._id,
                         "token": user.token,
                         "account": {
