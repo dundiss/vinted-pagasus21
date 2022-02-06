@@ -56,7 +56,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 
         //console.log(result);
 
-        newOffer.product_image = result.secure_url;
+        newOffer.product_image["secure_url"] = result.secure_url;
 
         await newOffer.save();
 
@@ -77,7 +77,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                     },
                     "_id": newOffer.owner._id
                 },
-                "product_image": {"secure_url": newOffer.product_image}
+                "product_image": newOffer.product_image
             }
         });
     } catch (error) {
