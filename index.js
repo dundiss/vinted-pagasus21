@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const formidable = require("express-formidable");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
@@ -24,6 +25,9 @@ const offerRouter = require("./routes/offer");
 
 app.use(userRouter);
 app.use(offerRouter);
+
+//Cette ligne fait bénifier de CORS à toutes les requêtes de notre serveur
+app.use(cors());
 
 app.all("*", (req, res) => {
     res.status(404).json({ message: "Page not found." });
