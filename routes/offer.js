@@ -56,7 +56,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 
         //console.log(result);
 
-        newOffer.product_image = result.secure_url;
+        newOffer.product_image.secure_url = result.secure_url;
 
         await newOffer.save();
 
