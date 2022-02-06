@@ -8,6 +8,9 @@ require("dotenv").config();
 const app = express();
 app.use(formidable());
 
+//Cette ligne fait bénéficier de CORS à toutes les requêtes de notre serveur
+app.use(cors());
+
 //connexion à la BDD
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -25,9 +28,6 @@ const offerRouter = require("./routes/offer");
 
 app.use(userRouter);
 app.use(offerRouter);
-
-//Cette ligne fait bénifier de CORS à toutes les requêtes de notre serveur
-app.use(cors());
 
 app.all("*", (req, res) => {
     res.status(404).json({ message: "Page not found." });
