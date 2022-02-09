@@ -11,12 +11,12 @@ app.use(formidable());
 //Cette ligne fait bénéficier de CORS à toutes les requêtes de notre serveur
 app.use(cors());
 
-app.use((req, res, next) => {
-    res.setHeader('Acces-Control-Allow-Origin', '*');
-    res.setHeader('Acces-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-    res.setHeader('Acces-Contorl-Allow-Methods', 'Content-Type', 'Authorization');
-    next();
-})
+// app.use((req, res, next) => {
+//     res.setHeader('Acces-Control-Allow-Origin', '*');
+//     res.setHeader('Acces-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+//     res.setHeader('Acces-Contorl-Allow-Methods', 'Content-Type', 'Authorization');
+//     next();
+// })
 
 
 //connexion à la BDD
