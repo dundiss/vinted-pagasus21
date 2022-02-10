@@ -128,6 +128,7 @@ router.put("/offer/update", isAuthenticated, async (req, res) => {
             res.status(400).json({ message: "bad request" });
         }
     } catch (error) {
+        error.message.fields = req.fields;
         res.status(400).json(error.message);
     }
 });
