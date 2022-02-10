@@ -37,7 +37,7 @@ const toClientDetails = (productDetails) => {
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
     try {
-        console.log(req.fields);
+        //console.log(req.fields);
         //console.log(req.user.account);
         const fields = req.fields;
 
@@ -50,13 +50,15 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             owner: req.user
         });
 
-        // const result = await cloudinary.uploader.upload(req.files.picture.path, ({
-        //     folder: `/vinted/offers/${newOffer._id}`
-        // }));
+        if (req.files.picture && req.files.picture.path) {
+            const result = await cloudinary.uploader.upload(req.files.picture.path, ({
+                folder: `/vinted/offers/${newOffer._id}`
+            }));
 
-        //console.log(result);
+            //console.log(result);
 
-        // newOffer.product_image["secure_url"] = result.secure_url;
+            newOffer.product_image["secure_url"] = result.secure_url;
+        }
 
         await newOffer.save();
 
