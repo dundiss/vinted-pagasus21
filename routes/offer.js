@@ -39,6 +39,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     try {
         //console.log(req.fields);
         //console.log(req.user.account);
+        console.log(req.files);
         const fields = req.fields;
 
         const newOffer = new Offer({
@@ -234,7 +235,9 @@ router.get("/offers", async (req, res) => {
 router.get("/offer/:id", async (req, res) => {
     try {
         if (req.params.id) {
-            res.json(await Offer.find({ _id: req.params.id }));
+            const offer = await Offer.find({ _id: req.params.id });
+            offer.product_details = toClientDetails(offer.product_details);
+            res.json(offer);
         }
         else {
             res.status(400).json({ message: "Bad request!" });
