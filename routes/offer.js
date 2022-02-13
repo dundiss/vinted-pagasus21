@@ -234,17 +234,16 @@ router.get("/offers", async (req, res) => {
 
 router.get("/offer/:id", async (req, res) => {
     try {
-        if (req.params.id) {
-            const offer = await Offer.find({ _id: req.params.id });
-            offer.product_details = toClientDetails(offer.product_details);
-            res.json(offer);
-        }
-        else {
-            res.status(400).json({ message: "Bad request!" });
-        }
-
+        const offer = await Offer.findById(req.params.id).populate({
+            path: "owner",
+            select: "account.username account.phone account.avatar",
+        });
+        //Formating product details to client expected format
+        offer.product_details = toClientDetails(offer.product_details);
+        res.json(offer);
     } catch (error) {
-        res.status(400).json(error.message);
+        console.log(error.message);
+        res.status(400).json({ message: error.message });
     }
 });
 
