@@ -56,8 +56,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                 folder: `/vinted/offers/${newOffer._id}`
             }));
 
-            //console.log(result);
-
             newOffer.product_image["secure_url"] = result.secure_url;
         }
 

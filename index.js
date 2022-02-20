@@ -4,20 +4,13 @@ const formidable = require("express-formidable");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
+const morgan = require("morgan");
 
 const app = express();
-app.use(formidable());
-
 //Cette ligne fait bénéficier de CORS à toutes les requêtes de notre serveur
 app.use(cors());
-
-// app.use((req, res, next) => {
-//     res.setHeader('Acces-Control-Allow-Origin', '*');
-//     res.setHeader('Acces-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-//     res.setHeader('Acces-Contorl-Allow-Methods', 'Content-Type', 'Authorization');
-//     next();
-// })
-
+app.use(formidable());
+app.use(morgan("dev"));
 
 //connexion à la BDD
 mongoose.connect(process.env.MONGODB_URI);
@@ -33,9 +26,11 @@ cloudinary.config({
 //import des routes
 const userRouter = require("./routes/user");
 const offerRouter = require("./routes/offer");
+const paymentRouter = require("./routes/payment");
 
 app.use(userRouter);
 app.use(offerRouter);
+app.use(paymentRouter);
 
 app.all("*", (req, res) => {
     res.status(404).json({ message: "Page not found." });
