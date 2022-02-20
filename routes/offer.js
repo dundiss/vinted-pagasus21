@@ -64,22 +64,20 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         //console.log(newOffer);
         //res.json({ message: populatedNewOffer });
         res.json({
-            message: {
-                "_id": newOffer._id,
-                "product_name": newOffer.product_name,
-                "product_description": newOffer.product_description,
-                "product_price": newOffer.product_price,
-                "product_details": toClientDetails(newOffer.product_details),
-                "owner": {
-                    "account": {
-                        "username": newOffer.owner.account.username,
-                        "phone": newOffer.owner.account.phone,
-                        "avatar": newOffer.owner.account.avatar
-                    },
-                    "_id": newOffer.owner._id
+            "_id": newOffer._id,
+            "product_name": newOffer.product_name,
+            "product_description": newOffer.product_description,
+            "product_price": newOffer.product_price,
+            "product_details": toClientDetails(newOffer.product_details),
+            "owner": {
+                "account": {
+                    "username": newOffer.owner.account.username,
+                    "phone": newOffer.owner.account.phone,
+                    "avatar": newOffer.owner.account.avatar
                 },
-                "product_image": newOffer.product_image
-            }
+                "_id": newOffer.owner._id
+            },
+            "product_image": newOffer.product_image
         });
     } catch (error) {
         res.status(400).json(error.message);
